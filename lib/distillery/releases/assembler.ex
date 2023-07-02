@@ -860,7 +860,10 @@ defmodule Distillery.Releases.Assembler do
     # no work around for this
     old_cwd = File.cwd!()
     File.cd!(output_dir)
-    :ok = :release_handler.create_RELEASES('./', 'releases', '#{relfile}', [])
+
+    # Fix from https://github.com/bitwalker/distillery/issues/749 - distillery was failing with:
+    #  ==> Failed to archive release: _build/prod/rel/osnap/releases/RELEASES: no such file or directory
+    :ok = :release_handler.create_RELEASES(File.cwd!(), Path.join([File.cwd!(), 'releases']), '#{relfile}', [])
     File.cd!(old_cwd)
     :ok
   end
